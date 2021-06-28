@@ -4,8 +4,8 @@
 	functin for parsing CASPERinfo file to retrieve endo data and HSU matrix
 
 	@param casperInfoFilePath	=> file path to CASPERinfo
-	@param endo				=> name of endo being used
-	@param endoData			=> vector to hold endo data for OffTarget class
+	@param endo					=> name of endo being used
+	@param endoData				=> vector to hold endo data for OffTarget class
 	@param hsuMatrixName		=> name of HSU matrix to be loaded
 	@param hsuMatrix			=> map to hold the HSU matrix data for OffTarget class
 
@@ -85,7 +85,7 @@ void FileOperations::parseCasperInfo(string &casperInfoFilePath, string &endo, v
 	function for parsing organism CSPR file to retrieve the unique reference targets
 
 	@parma csprFilePath	=> file path to CSPR file
-	@param uniqueSeqs		=> concatenated string of all unqiue sequences in CSPR file
+	@param uniqueSeqs	=> concatenated string of all unqiue sequences in CSPR file
 	@param uniqueScores	=> vector of ints holding the scores of each unqiue sequence
  */
 void FileOperations::parseCsprFile(string &csprFilePath, string &uniqueSeqs, vector<uint8_t> &uniqueScores, vector <long long > &uniqueLocations, vector<int> &uniqueChroms)
@@ -188,7 +188,7 @@ void FileOperations::parseSqlFile(string &dbFilePath, string &repeatSeqs, vector
 		{
 			for (int i = 0; i < chromosomeSplit.size(); i++)
 			{
-				repeatSeqs += seed + fiveSplit[i];
+				repeatSeqs += fiveSplit[i] + seed;
 				repeatChroms.push_back(stoi(chromosomeSplit[i]));
 				repeatLocations.push_back(stoll(locationSplit[i]));
 				repeatScores.push_back(stoi(scoreSplit[i]));
@@ -198,7 +198,7 @@ void FileOperations::parseSqlFile(string &dbFilePath, string &repeatSeqs, vector
 		{
 			for (int i = 0; i < chromosomeSplit.size(); i++)
 			{
-				repeatSeqs += threeSplit[i] + seed;
+				repeatSeqs += seed + threeSplit[i];
 				repeatChroms.push_back(stoi(chromosomeSplit[i]));
 				repeatLocations.push_back(stoll(locationSplit[i]));
 				repeatScores.push_back(stoi(scoreSplit[i]));
@@ -208,7 +208,7 @@ void FileOperations::parseSqlFile(string &dbFilePath, string &repeatSeqs, vector
 		{
 			for (int i = 0; i < chromosomeSplit.size(); i++)
 			{
-				repeatSeqs += threeSplit[i] + seed + fiveSplit[i];
+				repeatSeqs += fiveSplit[i] + seed + threeSplit[i];
 				repeatChroms.push_back(stoi(chromosomeSplit[i]));
 				repeatLocations.push_back(stoll(locationSplit[i]));
 				repeatScores.push_back(stoi(scoreSplit[i]));
@@ -316,6 +316,7 @@ void FileOperations::writeResults(bool &avgOutput, string &querySeq, vector<doub
 		}
 		for (int i = 0; i < repeatScores.size(); i++)
 		{
+			//cout << repeatSeqs.substr(repeatIndexes[i] * seqLength, seqLength) << endl;
 			outputFile << repeatScores[i] << "," << repeatChroms[repeatIndexes[i]] << "," << repeatLocations[repeatIndexes[i]] << "," << repeatSeqs.substr(repeatIndexes[i] * seqLength, seqLength) << endl;
 		}
 	}
