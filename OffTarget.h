@@ -32,11 +32,13 @@ class OffTarget
 			avgOutput		=> Defines if average output format is used: only the offtarget score is shown for each query sequences in the output file
 			detailedOutput	=> Defines if detailed output format is used: provides additional information on targets found from the algorithm
 			hsuMatrixName	=> HSU matrix name to parse from CASPERinfo
+			three_prime		=> boolean - True = 3 prime, False = 5 prime
 		*/
 		bool avgOutput = false, detailedOutput = false;
 		int maxMismatches = 0;
 		double threshold = 0;
 		string endo, queryFilePath, csprFilePath, sqlFilePath, outputFilePath, casperInfoFilePath, hsuMatrixName;
+		bool three_prime = true;
 
 		/* 
 			CASPERinfo variable definitions
@@ -45,6 +47,7 @@ class OffTarget
 		*/
 		vector<int> endoData;
 		map<string, vector<double>> hsuMatrix;
+		vector<string> hsuKeys = { "GT", "AC", "GG", "TG", "TT", "CA", "CT", "GA", "AA", "AG", "TC", "CC" };
 
 		/*
 			CSPR file variable definitions

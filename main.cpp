@@ -1,7 +1,8 @@
 #include "OffTarget.h"
 
-#include <bitset>
 #include <chrono>
+#include <fstream>
+#include "Score.h"
 
 using namespace std;
 using std::chrono::high_resolution_clock;
@@ -13,7 +14,7 @@ using std::chrono::seconds;
 int main(int argc, char *argv[])
 {	
 	auto start = high_resolution_clock::now();
-	
+
 	/* create OffTarget object */
 	OffTarget OT;
 
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
 		<< chrono::duration_cast<chrono::seconds>(end - start).count()
 		<< " sec" << endl;
 
-	system("pause");
+	//system("pause");
 	return 0;
 }
 

@@ -42,7 +42,6 @@ class FileOperations
 	private:
 		ofstream outputFile;
 
-
 		/* hsuKeys => static keys for the HSU matrix */
 		vector<string> hsuKeys = {"GT", "AC", "GG", "TG", "TT", "CA", "CT", "GA", "AA", "AG", "TC", "CC"};
 		

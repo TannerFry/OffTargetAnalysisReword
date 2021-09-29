@@ -1,7 +1,7 @@
 #include "OffTarget.h"
 
-/* 
-	function for parsing input arguments 
+/*
+	function for parsing input arguments
 
 	@param argc	=> number of input arguments
 	@param argv	=> array of input arguments
@@ -35,6 +35,16 @@ void OffTarget::getAlgorithmData()
 	FileOp.parseCsprFile(csprFilePath, uniqueSeqs, uniqueScores, uniqueLocations, uniqueChroms);
 	FileOp.parseSqlFile(sqlFilePath, repeatSeqs, repeatScores, repeatLocations, repeatChroms);
 	FileOp.parseQueryFile(queryFilePath, querySeqs, queryScores);
+
+	//store three prime
+	if (endoData[5] == 3)
+	{
+		three_prime = true;
+	}
+	else
+	{
+		three_prime = false;
+	}
 }
 
 /* 
@@ -132,16 +142,22 @@ void OffTarget::findSimilarsUnique(string &currentQuerySeq, int &currentQuerySco
 	for (unsigned long i = 0; i < uniqueSeqs.length() / seqLength; i++)
 	{
 		vector<int> mismatches;
-		vector<string> hsuKeys;
-		rRatio = uniqueScores[i] / currentQueryScore;
+		vector<string> mismatchKeys;
+		rRatio = double(uniqueScores[i]) / double(currentQueryScore);
 		refSeq = uniqueSeqs.substr(i * seqLength, seqLength);
 
 		//character by character comparison of ref and query sequences
-		if (getMismatches(refSeq, currentQuerySeq, mismatches, hsuKeys, seqLength))
+		if (getMismatches(refSeq, currentQuerySeq, mismatches, mismatchKeys, seqLength))
 		{
-			//update runnning score if mismatch count wasn't too large
 			targetIndexes.push_back(i);
-			value = (((sqrt(score.shScore(mismatches, hsuKeys, hsuMatrix)) + score.stScore(mismatches)) * pow(score.ssScore(mismatches), 6) * pow(rRatio, 2)) / 4);
+
+			double st_score = score.stScore(mismatches);
+			double sh_score = score.shScore(mismatches, mismatchKeys, hsuMatrix, seqLength);
+			double ss_score = score.ssScore(mismatches, seqLength);
+
+			value = (sqrt(sh_score) + st_score) * (pow(rRatio, 2)) * (pow(ss_score, 6));
+			value /= 4;
+			
 			targetScores.push_back(value);
 		}
 	}
@@ -161,16 +177,23 @@ void OffTarget::findSimilarsRepeat(string &currentQuerySeq, int &currentQuerySco
 	for (unsigned long i = 0; i < repeatSeqs.length() / seqLength; i++)
 	{
 		vector<int> mismatches;
-		vector<string> hsuKeys;
-		rRatio = repeatScores[i] / currentQueryScore;
+		vector<string> mismatchKeys;
+		rRatio = double(repeatScores[i]) / double(currentQueryScore);
 		refSeq = repeatSeqs.substr(i * seqLength, seqLength);
 
 		//character by character comparison of ref and query sequences
-		if (getMismatches(refSeq, currentQuerySeq, mismatches, hsuKeys, seqLength))
+		if (getMismatches(refSeq, currentQuerySeq, mismatches, mismatchKeys, seqLength))
 		{
 			//update runnning score if mismatch count wasn't too large
 			targetIndexes.push_back(i);
-			value = (((sqrt(score.shScore(mismatches, hsuKeys, hsuMatrix)) + score.stScore(mismatches)) * pow(score.ssScore(mismatches), 6) * pow(rRatio, 2)) / 4);
+
+			double st_score = score.stScore(mismatches);
+			double sh_score = score.shScore(mismatches, mismatchKeys, hsuMatrix, seqLength);
+			double ss_score = score.ssScore(mismatches, seqLength);
+
+			value = (sqrt(sh_score) + st_score) * (pow(rRatio, 2)) * (pow(ss_score, 6));
+			value /= 4;
+
 			targetScores.push_back(value);
 		}
 	}
@@ -188,37 +211,50 @@ void OffTarget::findSimilarsRepeat(string &currentQuerySeq, int &currentQuerySco
 	@return true	=> number of mismatches found not larger than max mismatches allowed
 	@return false	=> otherwise
  */
-bool OffTarget::getMismatches(string &refSeq, string &currentQuerySeq, vector<int> &mismatchLocations, vector<string> &hsuKeys, int &seqLength)
+bool OffTarget::getMismatches(string &refSeq, string &currentQuerySeq, vector<int> &mismatchLocations, vector<string> &mismatchKeys, int &seqLength)
 {
 	/* vars */
 	string hsuKey;
 	
-	//character by character comparison of ref and query sequences
-	for (int j = seqLength - 1; j >= 0; j--)
+	if (three_prime)
 	{
-		try
+		for (int j = seqLength - 1; j >= 0; j--)
 		{
 			if (refSeq.at(j) != currentQuerySeq.at(j))
 			{
 				//store mismatch location
-				mismatchLocations.push_back(j);
-
+				mismatchLocations.push_back(seqLength - j);
 				//store key for HSU matrix
-				hsuKey = string() + currentQuerySeq.at(j) + reverseComp(refSeq.at(j));
-				hsuKeys.push_back(hsuKey);
+				hsuKey = string() + refSeq.at(j) + reverseComp(currentQuerySeq.at(j));
+				mismatchKeys.push_back(hsuKey);
 			}
 		}
-		catch (int e)
-		{
-			cout << "mismatch error" << endl;
-		}
-		
 		/* if there are too many mismatches, break */
 		if (mismatchLocations.size() > maxMismatches)
 		{
 			return false;
 		}
 	}
+	else
+	{
+		for (int j = seqLength - 1; j >= 0; j--)
+		{
+			if (refSeq.at(j) != currentQuerySeq.at(j))
+			{
+				//store mismatch location
+				mismatchLocations.push_back(j + 1);
+				//store key for HSU matrix
+				hsuKey = string() + refSeq.at(j) + reverseComp(currentQuerySeq.at(j));
+				mismatchKeys.push_back(hsuKey);
+			}
+		}
+		/* if there are too many mismatches, break */
+		if (mismatchLocations.size() > maxMismatches)
+		{
+			return false;
+		}
+	}
+
 	return true;
 }
 
