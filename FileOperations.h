@@ -8,9 +8,6 @@
 #include <cstdint>
 #include <numeric>
 #include <iomanip>
-#include <boost/iostreams/filtering_streambuf.hpp>
-#include <boost/iostreams/copy.hpp>
-#include <boost/iostreams/filter/gzip.hpp>
 #include "sqlite3.h"
 
 using namespace std;
@@ -41,7 +38,6 @@ class FileOperations
 	
 	private:
 		ofstream outputFile;
-
 
 		/* hsuKeys => static keys for the HSU matrix */
 		vector<string> hsuKeys = {"GT", "AC", "GG", "TG", "TT", "CA", "CT", "GA", "AA", "AG", "TC", "CC"};
