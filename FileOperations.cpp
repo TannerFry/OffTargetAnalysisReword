@@ -86,9 +86,11 @@ void FileOperations::parseCasperInfo(string &casperInfoFilePath, string &endo, v
 /*
 	function for parsing organism CSPR file to retrieve the unique reference targets
 
-	@parma csprFilePath	=> file path to CSPR file
-	@param uniqueSeqs	=> concatenated string of all unqiue sequences in CSPR file
-	@param uniqueScores	=> vector of ints holding the scores of each unqiue sequence
+	@parma csprFilePath		=> file path to CSPR file
+	@param uniqueSeqs		=> concatenated string of all unqiue sequences in CSPR file
+	@param uniqueScores		=> vector of ints holding the scores of each unqiue sequence
+	@param uniqueLocations	=> vector to store the locations of unique sequences
+	@param uniqueChroms		=> vector holding the chromosomes for the unqiues
  */
 void FileOperations::parseCsprFile(string &csprFilePath, string &uniqueSeqs, vector<uint8_t> &uniqueScores, vector <long long > &uniqueLocations, vector<int> &uniqueChroms)
 {
@@ -134,6 +136,12 @@ void FileOperations::parseCsprFile(string &csprFilePath, string &uniqueSeqs, vec
 
 /*
 	function for parsing organism SQL file to retrieve the repeat reference targets
+
+	@parma dbFilePath		=> file path to DB file
+	@param repeatSeqs		=> concatenated string of all repeat sequences in CSPR file
+	@param repeatScores		=> vector of ints holding the scores of each repeat sequence
+	@param repeatLocations	=> vector to store the locations of repeats sequences
+	@param repeatChroms		=> vector holding the chromosomes for the repeats
  */
 void FileOperations::parseSqlFile(string &dbFilePath, string &repeatSeqs, vector<uint8_t> &repeatScores, vector<long long> &repeatLocations, vector<int> &repeatChroms)
 {
@@ -292,7 +300,21 @@ void FileOperations::openOutputFile(string &outputFilePath, bool &avgOutput)
 }
 
 /*
+	function to write out the off target scoring results
 
+	@param avgOutput		=> bool to determine if the output file will be in average format or detailed
+	@param querySeq			=> current query string to write results for
+	@param uniqueScores		=> scores of unqiue sequences
+	@param uniqueIndexes	=> indexes of the sequences found
+	@param repeatScores		=> scores of the repeat sequences
+	@param repeatIndexes	=> indexes of the repeats sequences found
+	@param repeatLocations	=> locations of the repeat sequences
+	@param repeatsChroms	=> chromosomes of the repeat sequences
+	@param repeatSeqs		=> repeat sequences found
+	@param uniqueLocations	=> locations of the unique sequences
+	@param uniqueChroms		=> chromosomes of the unqiue sequences
+	@param uniqueSeqs		=> unqiue sequences
+	@param seqLength		=> length of the pam
 */
 void FileOperations::writeResults(bool &avgOutput, string &querySeq, vector<double> &uniqueScores, vector<unsigned long> &uniqueIndexes, vector<double> &repeatScores, vector<unsigned long> &repeatIndexes, vector<long long> &repeatLocations, vector<int> &repeatChroms, string &repeatSeqs, vector<long long> &uniqueLocations, vector<int> &uniqueChroms, string &uniqueSeqs, int &seqLength)
 {

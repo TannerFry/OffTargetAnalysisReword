@@ -108,6 +108,8 @@ void OffTarget::run()
 
 	@param currentQuerySeq		=> current query sequence being analyzed
 	@param currentQueryScore	=> on-target score of query sequence
+	@param targetScores			=> vector that gets filled with individual scores from targets found in this function
+	@param targetIndexes		=> vector that gets filled with the index values of target sequences found
  */
 void OffTarget::findSimilars(string currentQuerySeq, int currentQueryScore, vector<vector<double> > &targetScores, vector<vector<unsigned long> > &targetIndexes)
 {
@@ -128,7 +130,7 @@ void OffTarget::findSimilars(string currentQuerySeq, int currentQueryScore, vect
 	@param currentQueryScore	=> on-score of current query string
 	@param seqLength			=> length of sequences for current endo
 	@param targetScores			=> vector that gets filled with individual scores from targets found in this function
-	@param uniqueIndexes		=> vector that gets filled with the index values of target sequences found
+	@param targetIndexes		=> vector that gets filled with the index values of target sequences found
 
 */
 void OffTarget::findSimilarsUnique(string &currentQuerySeq, int &currentQueryScore, int &seqLength, vector<double> &targetScores, vector<unsigned long> &targetIndexes)
@@ -158,13 +160,19 @@ void OffTarget::findSimilarsUnique(string &currentQuerySeq, int &currentQuerySco
 			value = (sqrt(sh_score) + st_score) * (pow(rRatio, 2)) * (pow(ss_score, 6));
 			value /= 4;
 			
-			targetScores.push_back(value);
+			targetScores.push_back(value / 2);
 		}
 	}
 }
 
 /* 
 	function for running off target analysis of query sequence against the repeat organism data from DB file
+
+	@param currentQuerySeq		=> current query sequence string
+	@param currentQueryScore	=> on-score of current query string
+	@param seqLength			=> length of sequences for current endo
+	@param targetScores			=> vector that gets filled with individual scores from targets found in this function
+	@param targetIndexes		=> vector that gets filled with the index values of target sequences found
 */
 void OffTarget::findSimilarsRepeat(string &currentQuerySeq, int &currentQueryScore, int &seqLength, vector<double> &targetScores, vector<unsigned long> &targetIndexes)
 {
@@ -194,7 +202,7 @@ void OffTarget::findSimilarsRepeat(string &currentQuerySeq, int &currentQuerySco
 			value = (sqrt(sh_score) + st_score) * (pow(rRatio, 2)) * (pow(ss_score, 6));
 			value /= 4;
 
-			targetScores.push_back(value);
+			targetScores.push_back(value / 2);
 		}
 	}
 }
@@ -205,7 +213,7 @@ void OffTarget::findSimilarsRepeat(string &currentQuerySeq, int &currentQuerySco
 	@param refSeq				=> sequence pulled from organism CSPR/DB file
 	@param currentQuerySeq		=> sequence pulled from query file
 	@param mismatchLocations	=> vector that will get filled in with the locations the mismatched characters appear at between the two sequences
-	@param hsuKeys				=> vector that will get filled in with the HSU keys to use with each mismatch location
+	@param mismatchKeys			=> vector that will get filled in with the HSU keys to use with each mismatch location
 	@param seqLength			=> int representing the length of sequences for the current endo
 
 	@return true	=> number of mismatches found not larger than max mismatches allowed

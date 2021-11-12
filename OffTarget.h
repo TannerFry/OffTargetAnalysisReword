@@ -63,7 +63,10 @@ class OffTarget
 
 		/*
 			DB file variable definitions
-
+			repeatSeqs		=> concatendated string of all repeat sequences in the db file
+			repeatScores	=> vector of ints holding the scores of each repeat sequence
+			repeatLocations	=> vector holding the locations of the repeat sequences in the db file
+			repeatChroms	=> vector holding the chromosome of each sequence in db file
 		*/
 		string repeatSeqs;
 		vector<uint8_t> repeatScores;
