@@ -149,7 +149,7 @@ void OffTarget::findSimilarsUnique(string &currentQuerySeq, int &currentQuerySco
 		refSeq = uniqueSeqs.substr(i * seqLength, seqLength);
 
 		//character by character comparison of ref and query sequences
-		if (getMismatches(refSeq, currentQuerySeq, mismatches, mismatchKeys, seqLength))
+		if (refSeq != currentQuerySeq && getMismatches(refSeq, currentQuerySeq, mismatches, mismatchKeys, seqLength))
 		{
 			targetIndexes.push_back(i);
 
