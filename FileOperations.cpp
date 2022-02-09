@@ -318,7 +318,7 @@ void FileOperations::openOutputFile(string &outputFilePath, bool &avgOutput)
 */
 void FileOperations::writeResults(bool &avgOutput, string &querySeq, vector<double> &uniqueScores, vector<unsigned long> &uniqueIndexes, vector<double> &repeatScores, vector<unsigned long> &repeatIndexes, vector<long long> &repeatLocations, vector<int> &repeatChroms, string &repeatSeqs, vector<long long> &uniqueLocations, vector<int> &uniqueChroms, string &uniqueSeqs, int &seqLength)
 {
-	double summedScore = accumulate(uniqueScores.begin(), uniqueScores.end(), 0.0) + accumulate(repeatScores.begin(), repeatScores.end(), 0.0);
+	double summedScore = (accumulate(uniqueScores.begin(), uniqueScores.end(), 0.0) + accumulate(repeatScores.begin(), repeatScores.end(), 0.0))/(uniqueScores.size()+repeatScores.size());
 
 	outputFile << fixed;
 	outputFile << setprecision(6);
