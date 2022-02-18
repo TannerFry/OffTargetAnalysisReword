@@ -1,9 +1,6 @@
 # **CASPER Off-Target Algorithm**
 
-* Executables for OT are already compiled and located in the Google Drive provided above. Once in the Google Drive, navigate to your OS folder, and executables are located in the "Old" and "New" folders.
-* The "Old" folder holds the executables for the old version of OT that uses the original compression format of .cspr files.
-* The "New" folder holds the executables for the new version of OT that uses gzip compressed .cspr files, and .db files for repeat data.
-* If you want to build the OT source code from scratch you'll need the Boost, Sqlite3, and Zlib libraries. You can follow the following sections for building the libraries and for building OT; otherwise, skip to the "How to use OT" section to see the command line arguments needed for OT.
+This algorithm uses CASPER's indexes from Seq-Finder to find and score potential off-target sites for input gRNAs.
 
 ## Download And Compile Sqlite3
 ### Linux: 
